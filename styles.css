@@ -1,0 +1,8 @@
+.imagen{
+    height: 300px;
+    object-fit: contain;
+}
+
+.card{
+    width: 18rem;
+}

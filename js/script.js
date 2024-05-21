@@ -1,60 +1,78 @@
 const fetchApi = async () => {
-    try{
+    try {
         let respuesta = await fetch('https://fakestoreapi.com/products')
         let json = await respuesta.json()
+
         return json
-    } catch(error){
+    } catch (error) {
         console.error('Error:', error)
+    }
 }
+
+let sacarCategorias = async (productos) => {
+    let listaCategorias = []
+    productos.forEach(producto => {
+        if (!listaCategorias.includes(producto.category)) {
+            listaCategorias.push(producto.category)
+        }
+    })
+    return listaCategorias
+}
+
+let render = (contenedor, productos, select, listadoProductos) => {
+    while (listadoProductos.firstChild) {
+        listadoProductos.removeChild(listadoProductos.firstChild)
+    }
+
+    productos.forEach(producto => {
+        if (producto.category == select.value || select.value == 'todos') {
+            let card = document.createElement('a')
+            card.innerHTML = `
+            <img src='${producto.image}' alt='${producto.title}' class='card-img-top img-fluid imagen'>
+            <div class='card-body'>
+                <h5 class='card-title'>Producto: ${producto.title}</h5>
+                <p class='card-title'>Categoria: ${producto.category}</p>
+                <p>Precio: $${producto.price}</p>
+            </div>
+            `
+            card.href = "#"
+            card.className = 'col card mx-0 my-2 shadow'
+            card.addEventListener('click', () => {
+            })
+
+            listadoProductos.appendChild(card)
+        }
+    })
+    contenedor.appendChild(listadoProductos)
 }
 
 const main = async () => {
-    let contenedor = document.getElementById('contenedor')
     let productos = await fetchApi()
-    console.log(productos)
 
-    let cantidadProductos = 0
-    let row = document.createElement('div')
-    row.className = 'row'
-    productos.forEach(producto => {
-        cantidadProductos +=1
-        if (cantidadProductos > 3){
-            cantidadProductos = 1
-            row = document.createElement('div')
-            row.className = 'row'
-            contenedor.appendChild(row)
-        }
-        
-        let card = document.createElement('div')
-        card.className = 'card'
+    let contenedor = document.getElementById('contenedor')
+    let select = document.getElementById('categorias')
+    let listadoProductos = document.getElementById('listadoProductos')
+    listadoProductos.className = 'mx-5 row row-cols-3 d-flex justify-content-around'
 
-        let imagen = document.createElement('img')
-        imagen.src = producto.image
-        imagen.className = 'card-img-top img-fluid'
-        card.appendChild(imagen)
+    let todosOption = document.createElement('option')
+    todosOption.value = 'todos'
+    todosOption.innerHTML = 'Todos'
+    todosOption.addEventListener('click', () => {
+        render(contenedor, productos, select, listadoProductos)
+    })
+    select.appendChild(todosOption)
 
-        let cardBody = document.createElement('div')
-        cardBody.className = 'card-body'
+    let listaCategorias = await sacarCategorias(productos)
+    listaCategorias.forEach(categoria => {
+        let categoriaOption = document.createElement('option')
+        categoriaOption.innerHTML = categoria
+        categoriaOption.addEventListener('click', () => {
+            render(contenedor, productos, select, listadoProductos)
+        })
+        select.appendChild(categoriaOption)
+    })
 
-        let nombre = document.createElement('h5')
-        nombre.innerHTML = `Producto: ${producto.title}`
-        nombre.className = 'card-title'
-        cardBody.appendChild(nombre)
-
-        let categoria = document.createElement('p')
-        categoria.innerHTML = `Categoria: ${producto.category}`
-        cardBody.appendChild(categoria)
-
-        let descripcion = document.createElement('p')
-        descripcion.innerHTML = `Descripcion: ${producto.description}`
-        cardBody.appendChild(descripcion)
-
-        let precio = document.createElement('p')
-        precio.innerHTML = `Precio: ${producto.price}`
-        card.appendChild(cardBody)
-
-        row.appendChild(card)
-    });
+    render(contenedor, productos, select, listadoProductos)
 }
 
 main()
