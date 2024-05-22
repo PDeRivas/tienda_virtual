@@ -6,3 +6,11 @@
 .card{
     width: 18rem;
 }
+
+#titulo:hover{
+    cursor: pointer;
+}
+
+.imagen:hover{
+    cursor: pointer;
+}
