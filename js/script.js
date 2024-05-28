@@ -44,7 +44,6 @@ let render = async (contenedor, productos, select, listadoProductos) => {
             imagen.alt = producto.title
             imagen.className = 'card-img-top img-fluid imagen'
             imagen.addEventListener('click', () => {
-                console.log('a')
                 renderProduct(contenedor, producto, listadoProductos)
             })
             card.appendChild(imagen)
@@ -120,21 +119,26 @@ let agregarAlCarrito = async (producto) => {
     }
 
     await guardarCarrito(carrito)
-    console.log(carrito)
 }
 
-let removerDelCarrito = async (producto) => {
+let removerUnidad = async (producto) => {
     let carrito = await obtenerCarrito()
-    let posProducto = 0
-    carrito.forEach(productoCarrito => {
-        if (producto.id === productoCarrito.id) {
-            posProducto = carrito.indexOf(carrito.find(productoPosicion => productoPosicion.id === producto.id))
-        }
-    })
+    let posProducto = carrito.indexOf(carrito.find(productoPosicion => productoPosicion.id === producto.id))
     carrito[posProducto].cantidad -= 1
 
+    if (carrito[posProducto].cantidad == 0){
+        carrito.splice(posProducto, 1)
+    }
+
     await guardarCarrito(carrito)
-    console.log(carrito)
+}
+
+let removerDelCarrito = async (producto) =>{
+    let carrito = await obtenerCarrito()
+    let posProducto = carrito.indexOf(carrito.find(productoPosicion => productoPosicion.id === producto.id))
+    carrito.splice(posProducto, 1)
+
+    await guardarCarrito(carrito)
 }
 
 const renderCarrito = async (contenedor, productos, select, listadoProductos) => {
@@ -199,11 +203,23 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         botonRemoverUnidad.className = 'btn btn-warning'
         botonRemoverUnidad.innerHTML = 'Remover Unidad'
         botonRemoverUnidad.addEventListener('click', async ()=>{
-            await removerDelCarrito(producto)
+            await removerUnidad(producto)
             renderCarrito(contenedor, productos, select, listadoProductos)
         })
         divRemoverUnidad.appendChild(botonRemoverUnidad)
         cardInnerRow.appendChild(divRemoverUnidad)
+
+        let divRemoverProducto = document.createElement('div')
+        divRemoverProducto.className = 'col-md-1 d-flex align-items-center mx-2'
+        let botonRemoverProducto = document.createElement('button')
+        botonRemoverProducto.className = 'btn btn-danger'
+        botonRemoverProducto.innerHTML = 'Remover Producto'
+        botonRemoverProducto.addEventListener('click', async ()=>{
+            await removerDelCarrito(producto)
+            renderCarrito(contenedor, productos, select, listadoProductos)
+        })
+        divRemoverProducto.appendChild(botonRemoverProducto)
+        cardInnerRow.appendChild(divRemoverProducto)
 
         card.appendChild(cardInnerRow)
         cardRow.append(card)
@@ -243,7 +259,6 @@ const main = async () => {
         let categoriaOption = document.createElement('option')
         categoriaOption.innerHTML = categoria
         categoriaOption.addEventListener('click', () => {
-            console.log(select.value)
             render(contenedor, productos, select, listadoProductos)
         })
         select.appendChild(categoriaOption)
