@@ -123,20 +123,6 @@ let agregarAlCarrito = async (producto) => {
     console.log(carrito)
 }
 
-let removerDelCarrito = async (producto) => {
-    let carrito = await obtenerCarrito()
-    let posProducto = 0
-    carrito.forEach(productoCarrito => {
-        if (producto.id === productoCarrito.id) {
-            posProducto = carrito.indexOf(carrito.find(productoPosicion => productoPosicion.id === producto.id))
-        }
-    })
-    carrito[posProducto].cantidad -= 1
-
-    await guardarCarrito(carrito)
-    console.log(carrito)
-}
-
 const renderCarrito = async (contenedor, productos, select, listadoProductos) => {
     while (listadoProductos.firstChild) {
         listadoProductos.removeChild(listadoProductos.firstChild)
@@ -145,69 +131,38 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
     carrito = await obtenerCarrito()
 
     carrito.forEach(producto => {
-        let cardRow = document.createElement('div')
-        cardRow.className = 'row justify-content-center'
-
-        let card = document.createElement('div')
-        card.className = 'card mb-3 w-75'
-
-        let cardInnerRow = document.createElement('div')
-        cardInnerRow.className = 'row g-0'
-
-        let colImage = document.createElement('div')
-        colImage.className = 'col-md-1'
-        let image = document.createElement('img')
-        image.className = 'img-fluid rounded-start imagen-chica my-2'
-        image.src = producto.image
-        image.alt = producto.title
-        colImage.appendChild(image)
-        cardInnerRow.appendChild(colImage)
-
-        let productDetail = document.createElement('div')
-        productDetail.className = 'col-md-7'
-
-        let cardBody = document.createElement('div')
-        cardBody.className = 'card-body'
-
-        let titulo = document.createElement('h5')
-        titulo.className = 'card-title'
-        titulo.innerHTML = producto.title
-
-        let cantidad = document.createElement('p')
-        cantidad.innerHTML = `Cantidad: ${producto.cantidad}`
-
-        cardBody.appendChild(titulo)
-        cardBody.appendChild(cantidad)
-        productDetail.appendChild(cardBody)
-        cardInnerRow.appendChild(productDetail)
-
-        let divAgregarUnidad = document.createElement('div')
-        divAgregarUnidad.className = 'col-md-1 d-flex align-items-center mx-2'
-        let botonAgregarUnidad = document.createElement('button')
-        botonAgregarUnidad.className = 'btn btn-info'
-        botonAgregarUnidad.innerHTML = 'Agregar Unidad'
-        botonAgregarUnidad.addEventListener('click', async ()=>{
-            await agregarAlCarrito(producto)
-            renderCarrito(contenedor, productos, select, listadoProductos)
-        })
-        divAgregarUnidad.appendChild(botonAgregarUnidad)
-        cardInnerRow.appendChild(divAgregarUnidad)
-
-        let divRemoverUnidad = document.createElement('div')
-        divRemoverUnidad.className = 'col-md-1 d-flex align-items-center mx-2'
-        let botonRemoverUnidad = document.createElement('button')
-        botonRemoverUnidad.className = 'btn btn-warning'
-        botonRemoverUnidad.innerHTML = 'Remover Unidad'
-        botonRemoverUnidad.addEventListener('click', async ()=>{
-            await removerDelCarrito(producto)
-            renderCarrito(contenedor, productos, select, listadoProductos)
-        })
-        divRemoverUnidad.appendChild(botonRemoverUnidad)
-        cardInnerRow.appendChild(divRemoverUnidad)
-
-        card.appendChild(cardInnerRow)
-        cardRow.append(card)
-        listadoProductos.appendChild(cardRow)
+        card = document.createElement('div')
+        card.className = 'row justify-content-center'
+        card.innerHTML = `
+        <div class='card mb-3 w-75'>
+            <div class="row g-0">
+                <div class="col-md-1">
+                    <img src="${producto.image}" class="img-fluid rounded-start imagen-chica my-2" alt="...">
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body">
+                        <h5 class="card-title">${producto.title}</h5>
+                        <p>Cantidad: ${producto.cantidad}</p>
+                    </div>
+                </div>
+                <div class="col-md-1 d-flex align-items-center mx-2" onClick='agregarAlCarrito(${producto})'>
+                    <button class="btn btn-info">
+                    Agregar Unidad
+                    </button>
+                </div>
+                <div class="col-md-1 d-flex align-items-center mx-2">
+                    <button class="btn btn-warning">
+                    Remover Unidad
+                    </button>
+                </div>
+                <div class="col-md-1 d-flex align-items-center mx-2">
+                    <button class="btn btn-danger">
+                    Quitar Producto
+                    </button>
+                </div>
+            </div>
+        </div>`
+        listadoProductos.appendChild(card)
     })
     let rowConfirmar = document.createElement('div')
     rowConfirmar.className = 'row justify-content-center'
