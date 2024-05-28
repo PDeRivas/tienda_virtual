@@ -168,7 +168,7 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardInnerRow.appendChild(colImage)
 
         let productDetail = document.createElement('div')
-        productDetail.className = 'col-md-7'
+        productDetail.className = 'col-md-4'
 
         let cardBody = document.createElement('div')
         cardBody.className = 'card-body'
@@ -186,7 +186,7 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardInnerRow.appendChild(productDetail)
 
         let divAgregarUnidad = document.createElement('div')
-        divAgregarUnidad.className = 'col-md-1 d-flex align-items-center mx-2'
+        divAgregarUnidad.className = 'col-md-2 d-flex align-items-center mx-2'
         let botonAgregarUnidad = document.createElement('button')
         botonAgregarUnidad.className = 'btn btn-info'
         botonAgregarUnidad.innerHTML = 'Agregar Unidad'
@@ -198,7 +198,7 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardInnerRow.appendChild(divAgregarUnidad)
 
         let divRemoverUnidad = document.createElement('div')
-        divRemoverUnidad.className = 'col-md-1 d-flex align-items-center mx-2'
+        divRemoverUnidad.className = 'col-md-2 d-flex align-items-center mx-2'
         let botonRemoverUnidad = document.createElement('button')
         botonRemoverUnidad.className = 'btn btn-warning'
         botonRemoverUnidad.innerHTML = 'Remover Unidad'
@@ -210,7 +210,7 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardInnerRow.appendChild(divRemoverUnidad)
 
         let divRemoverProducto = document.createElement('div')
-        divRemoverProducto.className = 'col-md-1 d-flex align-items-center mx-2'
+        divRemoverProducto.className = 'col-md-2 d-flex align-items-center mx-2'
         let botonRemoverProducto = document.createElement('button')
         botonRemoverProducto.className = 'btn btn-danger'
         botonRemoverProducto.innerHTML = 'Remover Producto'
@@ -225,8 +225,9 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardRow.append(card)
         listadoProductos.appendChild(cardRow)
     })
+
     let rowConfirmar = document.createElement('div')
-    rowConfirmar.className = 'row justify-content-center'
+    rowConfirmar.className = 'row justify-content-center mt-3 mb-3'
 
     let botonConfirmar = document.createElement('button')
     botonConfirmar.className = 'btn btn-success w-50'
@@ -238,6 +239,18 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
     })
     rowConfirmar.appendChild(botonConfirmar)
     listadoProductos.appendChild(rowConfirmar)
+
+    let rowCancelar = document.createElement('div')
+    rowCancelar.className = 'row justify-content-center mb-3'
+
+    let botonVolver = document.createElement('button')
+    botonVolver.className = 'btn btn-secondary w-50'
+    botonVolver.innerHTML = 'Volver'
+    botonVolver.addEventListener('click', () => {
+        render(contenedor, productos, select, listadoProductos)
+    })
+    rowCancelar.appendChild(botonVolver)
+    listadoProductos.appendChild(rowCancelar)
 }
 
 const main = async () => {
