@@ -148,6 +148,8 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
     listadoProductos.className = 'container'
     carrito = await obtenerCarrito()
 
+    let total = 0
+
     carrito.forEach(producto => {
         let cardRow = document.createElement('div')
         cardRow.className = 'row justify-content-center'
@@ -179,9 +181,15 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
 
         let cantidad = document.createElement('p')
         cantidad.innerHTML = `Cantidad: ${producto.cantidad}`
+        
+        let totalProducto = producto.price * producto.cantidad
+        total += totalProducto
+        let totalProductoTag = document.createElement('p')
+        totalProductoTag.innerHTML = `Total: $${totalProducto}`
 
         cardBody.appendChild(titulo)
         cardBody.appendChild(cantidad)
+        cardBody.appendChild(totalProductoTag)
         productDetail.appendChild(cardBody)
         cardInnerRow.appendChild(productDetail)
 
@@ -225,6 +233,16 @@ const renderCarrito = async (contenedor, productos, select, listadoProductos) =>
         cardRow.append(card)
         listadoProductos.appendChild(cardRow)
     })
+
+    let rowTotal = document.createElement('div')
+    rowTotal.className = 'row justify-content-center mt-3 mb-3'
+
+    let totalTag = document.createElement('p')
+    totalTag.className = 'text-center'
+    totalTag.innerHTML = `Total: $${total}`
+
+    rowTotal.appendChild(totalTag)
+    listadoProductos.appendChild(rowTotal)
 
     let rowConfirmar = document.createElement('div')
     rowConfirmar.className = 'row justify-content-center mt-3 mb-3'
